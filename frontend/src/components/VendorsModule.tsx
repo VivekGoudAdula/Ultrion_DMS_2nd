@@ -14,7 +14,11 @@ import {
   UserX,
   X,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Building2,
+  Globe,
+  ShieldCheck,
+  Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,33 +49,33 @@ interface Vendor {
 
 const INITIAL_VENDORS: Vendor[] = [
   {
-    id: "V001",
-    name: "Tata Steel",
-    contactPerson: "Rajesh Kumar",
-    email: "rajesh.k@tatasteel.com",
-    phone: "+91 98765 43210",
-    address: "Jamshedpur, Jharkhand",
-    rating: 4.8,
+    id: "V-9901",
+    name: "Global Logistics Corp",
+    contactPerson: "Sarah Jenkins",
+    email: "s.jenkins@globallogistics.com",
+    phone: "+1 (555) 0123-4567",
+    address: "Delaware, USA",
+    rating: 4.9,
     status: "active",
   },
   {
-    id: "V002",
-    name: "JSW Steel",
-    contactPerson: "Amit Shah",
-    email: "amit.s@jsw.in",
-    phone: "+91 98765 43211",
-    address: "Bellary, Karnataka",
-    rating: 4.5,
+    id: "V-9902",
+    name: "Tech Infrastructure Ltd",
+    contactPerson: "Michael Chen",
+    email: "m.chen@techinfra.io",
+    phone: "+44 20 7946 0123",
+    address: "London, UK",
+    rating: 4.7,
     status: "active",
   },
   {
-    id: "V003",
-    name: "SAIL",
-    contactPerson: "Sanjay Gupta",
-    email: "sanjay.g@sail.co.in",
-    phone: "+91 98765 43212",
-    address: "Bhilai, Chhattisgarh",
-    rating: 4.2,
+    id: "V-9903",
+    name: "Enterprise Services Inc",
+    contactPerson: "David Miller",
+    email: "d.miller@entservices.com",
+    phone: "+61 2 9876 5432",
+    address: "Sydney, Australia",
+    rating: 4.4,
     status: "inactive",
   },
 ];
@@ -100,7 +104,7 @@ export default function VendorsModule() {
     }
 
     const vendor: Vendor = {
-      id: "V" + Math.floor(1000 + Math.random() * 9000),
+      id: "V-" + Math.floor(1000 + Math.random() * 9000),
       ...newVendor,
       rating: 0,
       status: "active",
@@ -115,14 +119,14 @@ export default function VendorsModule() {
       phone: "",
       address: "",
     });
-    toast.success("Vendor added successfully");
+    toast.success("New vendor registered successfully");
   };
 
   const toggleStatus = (id: string) => {
     setVendors(vendors.map(v => 
       v.id === id ? { ...v, status: v.status === "active" ? "inactive" : "active" } : v
     ));
-    toast.info("Vendor status updated");
+    toast.info("Vendor operational status updated");
   };
 
   const renderStars = (rating: number) => {
@@ -132,76 +136,76 @@ export default function VendorsModule() {
           <Star 
             key={star}
             size={12} 
-            className={star <= Math.round(rating) ? "fill-[#002147] text-[#002147]" : "text-gray-200"} 
+            className={cn(star <= Math.round(rating) ? "fill-blue-600 text-blue-600" : "text-slate-200", "transition-colors")} 
           />
         ))}
-        <span className="ml-2 text-xs font-bold text-gray-900">{rating.toFixed(1)}</span>
+        <span className="ml-2 text-xs font-black text-slate-900 tracking-tighter">{rating.toFixed(1)}</span>
       </div>
     );
   };
 
   return (
-    <div className="animate-in fade-in duration-500 space-y-8">
+    <div className="animate-in fade-in duration-500 space-y-10">
       {/* 1. Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-2">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-5 h-5 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" className="w-4 h-4 text-slate-400 fill-none stroke-current stroke-2">
-                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M23 21v-2a4 4 0 00-3-3.87" />
-                <path d="M16 3.13a4 4 0 010 7.75" />
-              </svg>
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Supply Chain Network</span>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 pt-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></div>
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Institutional Ecosystem</span>
           </div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">Vendor Directory</h1>
-          <p className="text-slate-500 font-medium">Manage supplier information, performance metrics, and compliance status.</p>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tighter">Vendor Intelligence</h1>
+          <p className="text-slate-500 font-medium max-w-xl text-sm">Orchestrate supplier relationships, compliance scoring, and institutional data flows.</p>
         </div>
         <button 
           onClick={() => setIsAddModalOpen(true)}
-          className="enterprise-button-primary px-8 gap-3 shadow-md shadow-slate-200"
+          className="h-14 px-10 bg-[#0f172a] hover:bg-[#1e293b] text-white rounded-2xl text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3 shadow-xl shadow-slate-900/20 active:scale-95"
         >
-          <Plus className="w-5 h-5 stroke-[3px]" />
-          <span>Register New Vendor</span>
+          <Plus size={20} className="stroke-[3px]" />
+          <span>Register Vendor</span>
         </button>
       </div>
 
-
-
-      {/* Filters & Search */}
-      <div className="enterprise-card py-4 flex flex-col md:flex-row gap-4 items-center justify-between">
-        <div className="relative w-full md:w-96">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+      {/* Filters & Metrics Strip */}
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex-1 relative group">
+          <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+            <Search className="text-slate-300 group-focus-within:text-blue-600 transition-colors" size={18} />
+          </div>
           <Input 
-            placeholder="Search by name, ID or contact..." 
-            className="enterprise-input w-full !pl-10"
+            placeholder="Search ecosystem by entity, ID or contact..." 
+            className="w-full h-14 pl-14 pr-6 bg-white border-slate-200 rounded-2xl text-sm font-bold shadow-sm focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all outline-none"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl border border-gray-200">
-          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Active Suppliers:</span>
-          <span className="text-sm font-bold text-gray-900">{vendors.length}</span>
+        <div className="flex items-center gap-8 px-8 py-3 bg-slate-50 rounded-2xl border border-slate-100">
+          <div className="flex flex-col">
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Active Entities</span>
+            <span className="text-xl font-black text-slate-900">{vendors.filter(v => v.status === "active").length}</span>
+          </div>
+          <Separator orientation="vertical" className="h-8 bg-slate-200" />
+          <div className="flex flex-col">
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Compliance Rate</span>
+            <span className="text-xl font-black text-blue-600">98.2%</span>
+          </div>
         </div>
       </div>
 
-      {/* Vendors Table */}
-      <div className="enterprise-card p-0 overflow-hidden">
+      {/* Vendors Grid / Table */}
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl shadow-slate-900/5 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-100">
-                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-gray-500">Vendor Identity</th>
-                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-gray-500">Primary Contact</th>
-                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-gray-500">Communication</th>
-                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-gray-500">Performance</th>
-                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-gray-500">Status</th>
-                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-gray-500 text-right">Actions</th>
+              <tr className="bg-slate-50/50 border-b border-slate-100">
+                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Legal Entity</th>
+                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Authorized Contact</th>
+                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Communication</th>
+                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Trust Score</th>
+                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Status</th>
+                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Operations</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-slate-100">
               <AnimatePresence mode="popLayout">
                 {filteredVendors.map((vendor) => (
                   <motion.tr 
@@ -210,80 +214,79 @@ export default function VendorsModule() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="hover:bg-gray-50/80 transition-all group cursor-pointer"
+                    className="hover:bg-blue-50/30 transition-all group cursor-pointer"
                   >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-[#002147] flex items-center justify-center text-white font-bold text-sm shadow-sm">
-                          {vendor.name.charAt(0)}
+                    <td className="px-8 py-6">
+                      <div className="flex items-center gap-5">
+                        <div className="w-12 h-12 rounded-xl bg-[#0f172a] flex items-center justify-center text-white shadow-lg shadow-slate-900/10">
+                           <Building2 size={20} />
                         </div>
                         <div>
-                          <p className="font-bold text-gray-900 tracking-tight text-sm">{vendor.name}</p>
-                          <p className="text-[10px] text-gray-400 font-mono font-bold uppercase tracking-widest mt-0.5">{vendor.id}</p>
+                          <p className="font-bold text-slate-900 tracking-tight text-base leading-tight">{vendor.name}</p>
+                          <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1.5">{vendor.id}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-gray-600">
-                        <User size={14} className="text-gray-400" />
-                        <span className="text-sm font-semibold">{vendor.contactPerson}</span>
+                    <td className="px-8 py-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                           <User size={14} />
+                        </div>
+                        <span className="text-sm font-bold text-slate-700">{vendor.contactPerson}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-8 py-6">
                       <div className="space-y-1.5">
-                        <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
-                          <Mail size={12} className="text-gray-400" />
+                        <div className="flex items-center gap-2.5 text-xs font-bold text-slate-500">
+                          <Mail size={14} className="text-slate-300" />
                           <span>{vendor.email}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
-                          <Phone size={12} className="text-gray-400" />
+                        <div className="flex items-center gap-2.5 text-xs font-bold text-slate-400">
+                          <Phone size={14} className="text-slate-300" />
                           <span>{vendor.phone}</span>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 flex items-center h-full">
-                      <div className="mt-2.5">
-                        {renderStars(vendor.rating)}
-                      </div>
+                    <td className="px-8 py-6">
+                      {renderStars(vendor.rating)}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-8 py-6">
                       <Badge 
-                        variant="outline" 
                         className={cn(
-                          "rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wider border",
+                          "rounded-xl px-3 py-1.5 text-[9px] font-black uppercase tracking-widest border shadow-none",
                           vendor.status === "active" 
-                            ? "bg-green-50 text-green-700 border-green-200" 
-                            : "bg-gray-50 text-gray-500 border-gray-200"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
+                            : "bg-slate-50 text-slate-400 border-slate-200"
                         )}
                       >
                         {vendor.status === "active" ? (
-                          <CheckCircle2 size={10} className="mr-1.5" />
+                          <CheckCircle2 size={10} className="mr-2" />
                         ) : (
-                          <AlertCircle size={10} className="mr-1.5" />
+                          <AlertCircle size={10} className="mr-2" />
                         )}
                         {vendor.status}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2 transition-all">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-gray-400 hover:text-gray-900 hover:bg-gray-100 border border-transparent hover:border-gray-200">
-                          <Eye size={14} />
+                    <td className="px-8 py-6 text-right">
+                      <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all">
+                          <Eye size={16} />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-gray-400 hover:text-gray-900 hover:bg-gray-100 border border-transparent hover:border-gray-200">
-                          <Edit2 size={14} />
+                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all">
+                          <Edit2 size={16} />
                         </Button>
                         <Button 
                           variant="ghost" 
                           size="icon" 
                           onClick={() => toggleStatus(vendor.id)}
                           className={cn(
-                            "h-8 w-8 rounded-lg border border-transparent transition-all",
+                            "h-10 w-10 rounded-xl bg-white border border-slate-200 transition-all",
                             vendor.status === "active" 
-                              ? "text-gray-400 hover:text-red-600 hover:bg-red-50 hover:border-red-100" 
-                              : "text-gray-400 hover:text-green-600 hover:bg-green-50 hover:border-green-100"
+                              ? "text-slate-400 hover:text-red-600 hover:bg-red-50 hover:border-red-600" 
+                              : "text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 hover:border-emerald-600"
                           )}
                         >
-                          <UserX size={14} />
+                          <UserX size={16} />
                         </Button>
                       </div>
                     </td>
@@ -293,12 +296,14 @@ export default function VendorsModule() {
             </tbody>
           </table>
           {filteredVendors.length === 0 && (
-            <div className="py-20 text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-gray-50 text-gray-300 mb-4 border border-gray-100">
-                <Search size={24} />
+            <div className="py-32 text-center space-y-4">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-slate-50 text-slate-200 border border-slate-100">
+                <Search size={32} />
               </div>
-              <h3 className="text-sm font-bold text-gray-900">No vendors found</h3>
-              <p className="text-xs text-gray-500 mt-1">Try adjusting your search query</p>
+              <div className="space-y-1">
+                 <h3 className="text-lg font-bold text-slate-900">Entity not found</h3>
+                 <p className="text-sm text-slate-400 font-medium">Verify the vendor ID or legal entity name.</p>
+              </div>
             </div>
           )}
         </div>
@@ -306,87 +311,103 @@ export default function VendorsModule() {
 
       {/* Add Vendor Modal */}
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-        <DialogContent className="sm:max-w-lg rounded-xl p-0 overflow-hidden border-none shadow-2xl">
-          <div className="bg-white p-6 border-b border-gray-100">
-            <DialogHeader>
-              <DialogTitle className="text-lg font-bold tracking-tight text-gray-900">Register Supplier</DialogTitle>
-              <DialogDescription className="text-xs text-gray-500 font-medium">
-                Onboard a new vendor to the MPL Steels supply chain network.
-              </DialogDescription>
-            </DialogHeader>
+        <DialogContent className="sm:max-w-xl rounded-3xl p-0 overflow-hidden border-none shadow-2xl shadow-slate-900/40">
+          <div className="bg-[#0f172a] p-10 text-white relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
+             <div className="relative z-10">
+                <DialogHeader>
+                  <DialogTitle className="text-3xl font-black tracking-tight text-white uppercase">Register Supplier</DialogTitle>
+                  <DialogDescription className="text-slate-400 font-medium mt-2">
+                    Onboard a new institutional partner to the Ultrion DMS ecosystem.
+                  </DialogDescription>
+                </DialogHeader>
+             </div>
           </div>
-          <div className="p-6 space-y-4 bg-gray-50">
-            <div className="grid grid-cols-1 gap-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="name" className="text-xs font-bold text-gray-600 uppercase">Legal Entity Name</Label>
-                <Input 
-                  id="name" 
-                  placeholder="e.g. Tata Steel Ltd" 
-                  className="enterprise-input w-full"
-                  value={newVendor.name}
-                  onChange={(e) => setNewVendor({ ...newVendor, name: e.target.value })}
-                />
+          
+          <div className="p-10 space-y-8 bg-white">
+            <div className="grid grid-cols-1 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Legal Entity Name</Label>
+                <div className="relative group">
+                   <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-600 transition-colors" size={18} />
+                   <Input 
+                    id="name" 
+                    placeholder="e.g. Global Logistics Corp" 
+                    className="h-14 pl-12 bg-slate-50 border-slate-200 rounded-2xl text-sm font-bold placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-50 transition-all outline-none"
+                    value={newVendor.name}
+                    onChange={(e) => setNewVendor({ ...newVendor, name: e.target.value })}
+                  />
+                </div>
               </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="contact" className="text-xs font-bold text-gray-600 uppercase">Authorized Representative</Label>
-                <Input 
-                  id="contact" 
-                  placeholder="e.g. Rajesh Kumar" 
-                  className="enterprise-input w-full"
-                  value={newVendor.contactPerson}
-                  onChange={(e) => setNewVendor({ ...newVendor, contactPerson: e.target.value })}
-                />
+              
+              <div className="space-y-2">
+                <Label htmlFor="contact" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Authorized Representative</Label>
+                <div className="relative group">
+                   <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-600 transition-colors" size={18} />
+                   <Input 
+                    id="contact" 
+                    placeholder="e.g. Sarah Jenkins" 
+                    className="h-14 pl-12 bg-slate-50 border-slate-200 rounded-2xl text-sm font-bold placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-50 transition-all outline-none"
+                    value={newVendor.contactPerson}
+                    onChange={(e) => setNewVendor({ ...newVendor, contactPerson: e.target.value })}
+                  />
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="email" className="text-xs font-bold text-gray-600 uppercase">Business Email</Label>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Business Email</Label>
                   <Input 
                     id="email" 
                     type="email" 
-                    placeholder="rajesh.k@tatasteel.com" 
-                    className="enterprise-input w-full"
+                    placeholder="s.jenkins@globallogistics.com" 
+                    className="h-14 px-6 bg-slate-50 border-slate-200 rounded-2xl text-sm font-bold placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-50 transition-all outline-none"
                     value={newVendor.email}
                     onChange={(e) => setNewVendor({ ...newVendor, email: e.target.value })}
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="phone" className="text-xs font-bold text-gray-600 uppercase">Contact Number</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Contact Number</Label>
                   <Input 
                     id="phone" 
-                    placeholder="+91 98765 43210" 
-                    className="enterprise-input w-full"
+                    placeholder="+1 (555) 0123-4567" 
+                    className="h-14 px-6 bg-slate-50 border-slate-200 rounded-2xl text-sm font-bold placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-50 transition-all outline-none"
                     value={newVendor.phone}
                     onChange={(e) => setNewVendor({ ...newVendor, phone: e.target.value })}
                   />
                 </div>
               </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="address" className="text-xs font-bold text-gray-600 uppercase">Operational Headquarters</Label>
-                <Input 
-                  id="address" 
-                  placeholder="e.g. Jamshedpur, Jharkhand" 
-                  className="enterprise-input w-full"
-                  value={newVendor.address}
-                  onChange={(e) => setNewVendor({ ...newVendor, address: e.target.value })}
-                />
+              
+              <div className="space-y-2">
+                <Label htmlFor="address" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Operational Headquarters</Label>
+                <div className="relative group">
+                   <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-600 transition-colors" size={18} />
+                   <Input 
+                    id="address" 
+                    placeholder="e.g. Delaware, USA" 
+                    className="h-14 pl-12 bg-slate-50 border-slate-200 rounded-2xl text-sm font-bold placeholder:text-slate-400 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-50 transition-all outline-none"
+                    value={newVendor.address}
+                    onChange={(e) => setNewVendor({ ...newVendor, address: e.target.value })}
+                  />
+                </div>
               </div>
             </div>
+            
+            <div className="flex gap-4 pt-4">
+              <button 
+                onClick={() => setIsAddModalOpen(false)} 
+                className="flex-1 h-14 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-2xl text-xs font-black uppercase tracking-widest transition-all"
+              >
+                Discard
+              </button>
+              <button 
+                onClick={handleAddVendor} 
+                className="flex-[2] h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-xl shadow-blue-500/20 active:scale-[0.98]"
+              >
+                Register Entity
+              </button>
+            </div>
           </div>
-          <DialogFooter className="p-6 bg-gray-50 flex gap-3 border-t border-gray-100">
-            <button 
-              onClick={() => setIsAddModalOpen(false)} 
-              className="enterprise-button-secondary px-6"
-            >
-              <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Discard</span>
-            </button>
-            <button 
-              onClick={handleAddVendor} 
-              className="enterprise-button-primary px-8"
-            >
-              <span className="text-[11px] font-bold uppercase tracking-widest text-white">Confirm Registration</span>
-            </button>
-          </DialogFooter>
-
         </DialogContent>
       </Dialog>
     </div>

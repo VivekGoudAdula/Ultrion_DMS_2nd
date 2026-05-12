@@ -23,12 +23,22 @@ async def connect_db() -> None:
     global _client, _db
 
     logger.info("Connecting to MongoDB...")
-    _client = AsyncIOMotorClient(settings.MONGO_URI)
-    _db = _client.get_default_database()
+    try:
+        # Use the updated setting name
+        _client = AsyncIOMotorClient(settings.MONGODB_URI)
+        
+        # Explicitly select the database from settings
+        _db = _client[settings.MONGODB_DB]
 
-    # Verify connectivity with a lightweight ping
-    await _client.admin.command("ping")
-    logger.info("MongoDB connection established.")
+        # Verify connectivity with a lightweight ping
+        # Note: Some CosmosDB instances require specific permissions for admin commands
+        await _client.admin.command("ping")
+        logger.info(f"MongoDB connection established to database: {settings.MONGODB_DB}")
+    except Exception as e:
+        logger.error(f"Failed to connect to MongoDB: {str(e)}")
+        # In a managed environment like Render, we might want to fail fast 
+        # but with a clear error message in the logs.
+        raise e
 
 
 async def close_db() -> None:
