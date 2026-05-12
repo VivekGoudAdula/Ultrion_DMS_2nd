@@ -126,7 +126,15 @@ export default function DocumentViewer({ transaction: txn, isOpen, onClose, user
     );
   }, [searchQuery, localDocs]);
 
-  if (!txn) return null;
+  useEffect(() => {
+    if (isResizing) {
+      window.addEventListener('mousemove', handleResize);
+      window.addEventListener('mouseup', () => setIsResizing(false));
+    }
+    return () => {
+      window.removeEventListener('mousemove', handleResize);
+    };
+  }, [isResizing]);
 
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 25, 200));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 25, 50));
@@ -211,15 +219,6 @@ export default function DocumentViewer({ transaction: txn, isOpen, onClose, user
     }
   };
 
-  useEffect(() => {
-    if (isResizing) {
-      window.addEventListener('mousemove', handleResize);
-      window.addEventListener('mouseup', () => setIsResizing(false));
-    }
-    return () => {
-      window.removeEventListener('mousemove', handleResize);
-    };
-  }, [isResizing]);
 
   const getDocTypeColor = (type: string) => {
     const config = documentTypes.find(t => t.id === type);
@@ -243,7 +242,12 @@ export default function DocumentViewer({ transaction: txn, isOpen, onClose, user
           ? "max-w-[100vw] sm:max-w-[100vw] w-[100vw] h-[100vh] rounded-none m-0" 
           : "max-w-[98vw] sm:max-w-[98vw] w-[98vw] h-[95vh] rounded-2xl"
       )}>
-        
+        {!txn ? (
+          <div className="flex-1 flex items-center justify-center bg-slate-50">
+            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+          </div>
+        ) : (
+          <>
         {/* Header Bar */}
         <header className="h-14 bg-white border-b border-slate-100 flex items-center justify-between px-6 shrink-0 z-20">
           <div className="flex items-center gap-4">
@@ -498,6 +502,8 @@ export default function DocumentViewer({ transaction: txn, isOpen, onClose, user
             </div>
           </aside>
         </div>
+          </>
+        )}
       </DialogContent>
     </Dialog>
 
