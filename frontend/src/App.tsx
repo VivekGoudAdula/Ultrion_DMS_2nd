@@ -129,209 +129,217 @@ export default function App() {
     return <Auth onAuthSuccess={handleAuthSuccess} onBack={() => setView("landing")} />;
   }
 
-  if (user?.role === "super_admin") {
-    return <SuperAdminApp user={user} onLogout={handleLogout} />;
-  }
-
   /** Permission guard – viewer/editor can access all DMS modules except user-management */
   const isAllowed = (module: Module): boolean => {
     if (!user) return false;
     if (user.role === "editor" || user.role === "viewer") {
       return module !== "user-management";
     }
-    if (user.role === "admin") return true;
+    if (user.role === "admin" || user.role === "super_admin") return true;
     return false;
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex font-sans text-slate-900">
-      {/* ─── Sidebar ─── */}
-      <aside className="hidden lg:flex flex-col w-64 border-r border-slate-800 bg-[#0f172a] h-screen sticky top-0 z-20">
-        <div className="p-5 pb-4 flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+    <>
+      {view === "landing" && (
+        <LandingPage onGetStarted={() => setView("login")} onLogin={() => setView("login")} />
+      )}
+      {view === "login" && (
+        <Auth onAuthSuccess={handleAuthSuccess} onBack={() => setView("landing")} />
+      )}
+      {view === "app" && user?.role === "super_admin" && (
+        <SuperAdminApp user={user} onLogout={handleLogout} />
+      )}
+      {view === "app" && user?.role !== "super_admin" && (
+        <div className="min-h-screen bg-[#f8fafc] flex font-sans text-slate-900">
+          {/* ─── Sidebar ─── */}
+          <aside className="hidden lg:flex flex-col w-64 border-r border-slate-800 bg-[#0f172a] h-screen sticky top-0 z-20">
+            <div className="p-5 pb-4 flex-1 overflow-y-auto custom-scrollbar flex flex-col">
 
-          {/* Logo */}
-          <div className="flex items-center gap-3 mb-8 shrink-0 px-2 pt-1">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-black text-sm shadow-lg shadow-indigo-900/40">
-              U
-            </div>
-            <div>
-              <span className="font-bold text-white tracking-tight block leading-none text-sm">Ultrion DMS</span>
-              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5 block">
-                AI Document Platform
-              </span>
-            </div>
-          </div>
-
-          <nav className="space-y-0.5 flex-1">
-            <NavSection label="Core">
-              {isAllowed("dashboard") && (
-                <NavItem
-                  icon={<LayoutDashboard size={16} />}
-                  label="Dashboard"
-                  active={activeModule === "dashboard"}
-                  onClick={() => setActiveModule("dashboard")}
-                />
-              )}
-              {isAllowed("documents") && (
-                <NavItem
-                  icon={<Files size={16} />}
-                  label="Documents"
-                  active={activeModule === "documents"}
-                  onClick={() => setActiveModule("documents")}
-                />
-              )}
-              {isAllowed("search") && (
-                <NavItem
-                  icon={<Search size={16} />}
-                  label="Search"
-                  active={activeModule === "search"}
-                  onClick={() => setActiveModule("search")}
-                />
-              )}
-            </NavSection>
-
-            <NavSection label="Workflow">
-              {isAllowed("workflows") && (
-                <NavItem
-                  icon={<GitBranch size={16} />}
-                  label="Workflows"
-                  active={activeModule === "workflows"}
-                  onClick={() => setActiveModule("workflows")}
-                />
-              )}
-              {isAllowed("approvals") && (
-                <NavItem
-                  icon={<CheckSquare size={16} />}
-                  label="Approvals"
-                  active={activeModule === "approvals"}
-                  onClick={() => setActiveModule("approvals")}
-                />
-              )}
-              {isAllowed("audit-trail") && (
-                <NavItem
-                  icon={<ScrollText size={16} />}
-                  label="Audit Trail"
-                  active={activeModule === "audit-trail"}
-                  onClick={() => setActiveModule("audit-trail")}
-                />
-              )}
-              {isAllowed("retention") && (
-                <NavItem
-                  icon={<Archive size={16} />}
-                  label="Retention"
-                  active={activeModule === "retention"}
-                  onClick={() => setActiveModule("retention")}
-                />
-              )}
-            </NavSection>
-
-            <NavSection label="Intelligence">
-              {isAllowed("ai-assistant") && (
-                <NavItem
-                  icon={<Sparkles size={16} />}
-                  label="AI Assistant"
-                  active={activeModule === "ai-assistant"}
-                  onClick={() => setActiveModule("ai-assistant")}
-                  badge="AI"
-                />
-              )}
-            </NavSection>
-
-            <NavSection label="Admin">
-              {isAllowed("user-management") && (
-                <NavItem
-                  icon={<Shield size={16} />}
-                  label="Access Control"
-                  active={activeModule === "user-management"}
-                  onClick={() => setActiveModule("user-management")}
-                />
-              )}
-              {isAllowed("settings") && (
-                <NavItem
-                  icon={<Settings size={16} />}
-                  label="Settings"
-                  active={activeModule === "settings"}
-                  onClick={() => setActiveModule("settings")}
-                />
-              )}
-            </NavSection>
-          </nav>
-        </div>
-
-        {/* Sidebar Footer */}
-        <div className="p-4 border-t border-slate-800 bg-slate-900/40">
-          <div className="flex items-center gap-3 px-2 py-2 rounded-lg mb-3">
-            <div className="w-7 h-7 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-black shadow">
-              {user?.name?.charAt(0) || "U"}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-bold text-white truncate leading-none">{user?.name}</p>
-              <p className="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5 font-bold">{user?.role}</p>
-            </div>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5 h-9 px-3 rounded-lg transition-all text-[10px] font-bold uppercase tracking-widest w-full border border-transparent hover:border-slate-700 group"
-          >
-            <LogOut size={14} />
-            Sign Out
-          </button>
-        </div>
-      </aside>
-
-      {/* ─── Main Content ─── */}
-      <main className="flex-1 flex flex-col min-h-screen relative bg-[#f8fafc]">
-        {/* Top Header */}
-        <header className="h-14 flex items-center justify-between px-6 sticky top-0 bg-white z-50 border-b border-slate-200 shadow-sm">
-          <div className="flex items-center gap-2 text-[11px] text-slate-400 font-bold uppercase tracking-widest">
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-700 capitalize">{activeModule.replace("-", " ")}</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              className="h-9 w-9 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all border border-slate-200"
-              title="Notifications"
-            >
-              <Bell size={15} />
-            </button>
-
-            <div className="h-7 w-px bg-slate-200 mx-1" />
-
-            <div className="flex items-center gap-2.5 pl-1 pr-2 py-1 rounded-lg cursor-pointer group">
-              <div className="flex flex-col items-end">
-                <span className="text-[10px] font-black text-slate-900 leading-none uppercase tracking-wide">
-                  {user?.name}
-                </span>
-                <span className="text-[9px] text-indigo-600 font-bold uppercase tracking-tight mt-0.5">
-                  {user?.role}
-                </span>
+              {/* Logo */}
+              <div className="flex items-center gap-3 mb-8 shrink-0 px-2 pt-1">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white font-black text-sm shadow-lg shadow-indigo-900/40">
+                  U
+                </div>
+                <div>
+                  <span className="font-bold text-white tracking-tight block leading-none text-sm">Ultrion DMS</span>
+                  <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5 block">
+                    AI Document Platform
+                  </span>
+                </div>
               </div>
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-black shadow group-hover:shadow-indigo-200 transition-shadow">
-                {user?.name?.charAt(0) || "U"}
-              </div>
+
+              <nav className="space-y-0.5 flex-1">
+                <NavSection label="Core">
+                  {isAllowed("dashboard") && (
+                    <NavItem
+                      icon={<LayoutDashboard size={16} />}
+                      label="Dashboard"
+                      active={activeModule === "dashboard"}
+                      onClick={() => setActiveModule("dashboard")}
+                    />
+                  )}
+                  {isAllowed("documents") && (
+                    <NavItem
+                      icon={<Files size={16} />}
+                      label="Documents"
+                      active={activeModule === "documents"}
+                      onClick={() => setActiveModule("documents")}
+                    />
+                  )}
+                  {isAllowed("search") && (
+                    <NavItem
+                      icon={<Search size={16} />}
+                      label="Search"
+                      active={activeModule === "search"}
+                      onClick={() => setActiveModule("search")}
+                    />
+                  )}
+                </NavSection>
+
+                <NavSection label="Workflow">
+                  {isAllowed("workflows") && (
+                    <NavItem
+                      icon={<GitBranch size={16} />}
+                      label="Workflows"
+                      active={activeModule === "workflows"}
+                      onClick={() => setActiveModule("workflows")}
+                    />
+                  )}
+                  {isAllowed("approvals") && (
+                    <NavItem
+                      icon={<CheckSquare size={16} />}
+                      label="Approvals"
+                      active={activeModule === "approvals"}
+                      onClick={() => setActiveModule("approvals")}
+                    />
+                  )}
+                  {isAllowed("audit-trail") && (
+                    <NavItem
+                      icon={<ScrollText size={16} />}
+                      label="Audit Trail"
+                      active={activeModule === "audit-trail"}
+                      onClick={() => setActiveModule("audit-trail")}
+                    />
+                  )}
+                  {isAllowed("retention") && (
+                    <NavItem
+                      icon={<Archive size={16} />}
+                      label="Retention"
+                      active={activeModule === "retention"}
+                      onClick={() => setActiveModule("retention")}
+                    />
+                  )}
+                </NavSection>
+
+                <NavSection label="Intelligence">
+                  {isAllowed("ai-assistant") && (
+                    <NavItem
+                      icon={<Sparkles size={16} />}
+                      label="AI Assistant"
+                      active={activeModule === "ai-assistant"}
+                      onClick={() => setActiveModule("ai-assistant")}
+                      badge="AI"
+                    />
+                  )}
+                </NavSection>
+
+                <NavSection label="Admin">
+                  {isAllowed("user-management") && (
+                    <NavItem
+                      icon={<Shield size={16} />}
+                      label="Access Control"
+                      active={activeModule === "user-management"}
+                      onClick={() => setActiveModule("user-management")}
+                    />
+                  )}
+                  {isAllowed("settings") && (
+                    <NavItem
+                      icon={<Settings size={16} />}
+                      label="Settings"
+                      active={activeModule === "settings"}
+                      onClick={() => setActiveModule("settings")}
+                    />
+                  )}
+                </NavSection>
+              </nav>
             </div>
 
-            <button
-              onClick={handleLogout}
-              className="h-9 w-9 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all rounded-lg hover:bg-slate-50"
-              title="Sign Out"
-            >
-              <LogOut size={15} />
-            </button>
-          </div>
-        </header>
+            {/* Sidebar Footer */}
+            <div className="p-4 border-t border-slate-800 bg-slate-900/40">
+              <div className="flex items-center gap-3 px-2 py-2 rounded-lg mb-3">
+                <div className="w-7 h-7 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-black shadow">
+                  {user?.name?.charAt(0) || "U"}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] font-bold text-white truncate leading-none">{user?.name}</p>
+                  <p className="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5 font-bold">{user?.role}</p>
+                </div>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5 h-9 px-3 rounded-lg transition-all text-[10px] font-bold uppercase tracking-widest w-full border border-transparent hover:border-slate-700 group"
+              >
+                <LogOut size={14} />
+                Sign Out
+              </button>
+            </div>
+          </aside>
 
-        {/* Page Content */}
-        <div className="flex-1 p-8 overflow-y-auto">
-          <div className="max-w-[1600px] mx-auto">
-            {renderModule()}
-          </div>
+          {/* ─── Main Content ─── */}
+          <main className="flex-1 flex flex-col min-h-screen relative bg-[#f8fafc]">
+            {/* Top Header */}
+            <header className="h-14 flex items-center justify-between px-6 sticky top-0 bg-white z-50 border-b border-slate-200 shadow-sm">
+              <div className="flex items-center gap-2 text-[11px] text-slate-400 font-bold uppercase tracking-widest">
+                <span className="text-slate-300">/</span>
+                <span className="text-slate-700 capitalize">{activeModule.replace("-", " ")}</span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  className="h-9 w-9 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-all border border-slate-200"
+                  title="Notifications"
+                >
+                  <Bell size={15} />
+                </button>
+
+                <div className="h-7 w-px bg-slate-200 mx-1" />
+
+                <div className="flex items-center gap-2.5 pl-1 pr-2 py-1 rounded-lg cursor-pointer group">
+                  <div className="flex flex-col items-end">
+                    <span className="text-[10px] font-black text-slate-900 leading-none uppercase tracking-wide">
+                      {user?.name}
+                    </span>
+                    <span className="text-[9px] text-indigo-600 font-bold uppercase tracking-tight mt-0.5">
+                      {user?.role}
+                    </span>
+                  </div>
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-black shadow group-hover:shadow-indigo-200 transition-shadow">
+                    {user?.name?.charAt(0) || "U"}
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleLogout}
+                  className="h-9 w-9 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all rounded-lg hover:bg-slate-50"
+                  title="Sign Out"
+                >
+                  <LogOut size={15} />
+                </button>
+              </div>
+            </header>
+
+            {/* Page Content */}
+            <div className="flex-1 p-8 overflow-y-auto">
+              <div className="max-w-[1600px] mx-auto">
+                {renderModule()}
+              </div>
+            </div>
+          </main>
+          <Toaster position="top-right" richColors />
         </div>
-      </main>
-
-      <Toaster position="top-right" richColors />
-    </div>
+      )}
+    </>
   );
 }
 
