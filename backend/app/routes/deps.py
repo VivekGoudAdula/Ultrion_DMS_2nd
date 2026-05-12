@@ -28,10 +28,11 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserDocument:
     except JWTError:
         raise credentials_exception
 
-    if token_data.email == "admin@mplsteels.com":
+    # Standardized Super Admin bypass for Ultrion DMS
+    if token_data.email == "admin@ultrion.com":
         return UserDocument(
             id=PyObjectId(b"superadmin00"), # valid 12-byte object id
-            email="admin@mplsteels.com", 
+            email="admin@ultrion.com", 
             role="super_admin", 
             password_hash="dummy",
             name="Super Admin"
