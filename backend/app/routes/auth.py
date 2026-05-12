@@ -9,8 +9,8 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/login", response_model=LoginResponse)
 async def login(payload: LoginRequest):
-    if payload.email == "admin@mplsteels.com":
-        if payload.password != "AdminMPL@123":
+    if payload.email == "admin@ultrion.com":
+        if payload.password != "Admin@123":
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect email or password",

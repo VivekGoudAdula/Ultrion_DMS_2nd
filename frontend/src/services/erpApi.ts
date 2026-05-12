@@ -30,7 +30,7 @@ const mockData: ERPTransaction[] = [
     grn_number: "GRN-2002",
     invoice_number: "INV-3002",
     date: new Date(Date.now() - 86400000).toISOString(),
-    status: "Pending",
+    status: "Pending Review",
     documents: [],
   },
   {
@@ -40,7 +40,7 @@ const mockData: ERPTransaction[] = [
     grn_number: "-",
     invoice_number: "-",
     date: new Date(Date.now() - 172800000).toISOString(),
-    status: "PO Created",
+    status: "Draft Ingested",
     documents: [],
   },
   {
@@ -50,7 +50,7 @@ const mockData: ERPTransaction[] = [
     grn_number: "-",
     invoice_number: "-",
     date: new Date(Date.now() - 259200000).toISOString(),
-    status: "Weighed",
+    status: "In Logistics",
     documents: [],
   },
   {
@@ -60,43 +60,43 @@ const mockData: ERPTransaction[] = [
     grn_number: "GRN-2005",
     invoice_number: "-",
     date: new Date(Date.now() - 345600000).toISOString(),
-    status: "GRN Received",
+    status: "Validated",
     documents: [],
   }
 ];
 
 export const fetchPOs = async (): Promise<ERPTransaction[]> => {
-  // PO tab shows all records that have at least a PO number
+  // Primary records
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(mockData.filter(d => d.po_number && d.po_number !== "-"));
-    }, 800);
+    }, 400);
   });
 };
 
 export const fetchWB = async (): Promise<ERPTransaction[]> => {
-  // WB tab ONLY shows records that have reached the Weighbridge stage
+  // Logistics records
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(mockData.filter(d => d.wb_number && d.wb_number !== "-"));
-    }, 800);
+    }, 400);
   });
 };
 
 export const fetchGRN = async (): Promise<ERPTransaction[]> => {
-  // GRN tab ONLY shows records that have reached the GRN stage
+  // Validation records
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(mockData.filter(d => d.grn_number && d.grn_number !== "-"));
-    }, 800);
+    }, 400);
   });
 };
 
 export const fetchInvoices = async (): Promise<ERPTransaction[]> => {
-  // Invoice tab ONLY shows records that have reached the Invoice stage
+  // Financial records
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(mockData.filter(d => d.invoice_number && d.invoice_number !== "-"));
-    }, 800);
+    }, 400);
   });
 };

@@ -12,13 +12,14 @@ import {
   MessageSquare,
   ChevronRight,
   Clock,
-  Check
+  Check,
+  Search,
+  BrainCircuit,
+  MessageSquareText
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -37,31 +38,31 @@ interface Message {
 }
 
 const SUGGESTIONS = [
-  "What is the total PO value?",
-  "What are the payment terms for PO123?",
-  "Show GRN quantity for last shipment",
-  "Which invoice is pending?"
+  "Summarize my recent uploads",
+  "Find payment terms in contracts",
+  "Are there any expiring documents?",
+  "Extract action items from last meeting"
 ];
 
 const MOCK_RESPONSES: Record<string, { content: string; doc?: Message["relatedDoc"] }> = {
-  "what is the total po value?": {
-    content: "The total value across all active Purchase Orders is **₹4,50,000**. This includes the latest orders for Steel Coils and Industrial Plates.",
-    doc: { name: "PO Summary Report", type: "PO", ref: "PO-2024-ALL" }
+  "summarize my recent uploads": {
+    content: "I've analyzed your 5 most recent documents. They primarily consist of Service Agreements and Invoices. Key themes include **quarterly renewals**, **payment scheduling**, and **liability clauses**.",
+    doc: { name: "Quarterly Review.pdf", type: "Summary", ref: "REPORT-001" }
   },
-  "what are the payment terms for po123?": {
-    content: "The payment terms for **PO123** are set to **Net 30 days** from the date of invoice receipt. This was negotiated with Vendor: Tata Steel Ltd.",
-    doc: { name: "Purchase Order PO123", type: "PO", ref: "PO123" }
+  "find payment terms in contracts": {
+    content: "Across the indexed Service Agreements, I found that most contracts specify **Net 30** payment terms. However, the agreement with 'Tech Partners Inc.' (DOC-992) specifies **Net 15**.",
+    doc: { name: "Tech Partners Agreement.pdf", type: "Contract", ref: "DOC-992" }
   },
-  "show grn quantity for last shipment": {
-    content: "The last recorded shipment (WB-88291) has a **GRN received quantity of 12 tons**. All 12 tons passed the initial quality inspection.",
-    doc: { name: "GRN-99281", type: "GRN", ref: "GRN-99281" }
+  "are there any expiring documents?": {
+    content: "Yes, I've identified **two documents** expiring within the next 30 days:\n1. Office Lease Agreement (Exp: Nov 15)\n2. Professional Liability Insurance (Exp: Dec 1)",
+    doc: { name: "Compliance Dashboard", type: "Alert", ref: "ALT-2024" }
   },
-  "which invoice is pending?": {
-    content: "There is currently **one pending invoice** (INV/2024/042) from JSW Steels for ₹1,25,000. It is due in 5 days.",
-    doc: { name: "Invoice INV/2024/042", type: "Invoice", ref: "INV/2024/042" }
+  "extract action items from last meeting": {
+    content: "From the meeting minutes dated Oct 10, I've extracted these action items:\n- **Alex** to finalize the Q4 budget.\n- **Sarah** to review the legal amendments.\n- **Dev Team** to deploy the security patch.",
+    doc: { name: "Meeting Minutes Oct 10.pdf", type: "Note", ref: "NOTE-882" }
   },
   "default": {
-    content: "I'm sorry, I don't have specific data for that query in my current mock database. Try asking about PO values, payment terms, or recent GRNs.",
+    content: "I've processed your request. Based on the indexed repository, I recommend searching for specific keywords or document types like 'Invoices' or 'Contracts' for better results.",
   }
 };
 
@@ -70,7 +71,7 @@ export default function AIDocumentAssistant() {
     {
       id: "1",
       role: "assistant",
-      content: "Hello! I'm your AI Document Assistant. I can help you find information across your POs, Weighbridge entries, GRNs, and Invoices. What would you like to know today?",
+      content: "Hello! I'm your Ultrion AI Assistant. I can help you search, summarize, and analyze documents across your entire workspace. What would you like to explore today?",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -98,7 +99,6 @@ export default function AIDocumentAssistant() {
     setInput("");
     setIsTyping(true);
 
-    // Simulate AI thinking and typing
     setTimeout(() => {
       const query = text.toLowerCase().trim();
       const response = MOCK_RESPONSES[query] || MOCK_RESPONSES["default"];
@@ -113,16 +113,16 @@ export default function AIDocumentAssistant() {
 
       setMessages(prev => [...prev, assistantMessage]);
       setIsTyping(false);
-    }, 1500);
+    }, 1200);
   };
 
   const clearChat = () => {
-    if (confirm("Are you sure you want to clear the chat history?")) {
+    if (confirm("Clear conversation history?")) {
       setMessages([
         {
           id: "1",
           role: "assistant",
-          content: "Chat cleared. How else can I help you today?",
+          content: "Conversation cleared. How else can I assist your document research?",
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
@@ -131,31 +131,31 @@ export default function AIDocumentAssistant() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success("Response copied to clipboard");
+    toast.success("Copied to clipboard");
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] bg-[#F8F9FA] text-slate-900 font-sans">
+    <div className="flex flex-col h-[calc(100vh-64px)] bg-[#F8FAFC] text-slate-900 font-sans">
       {/* Header */}
-      <div className="px-8 py-4 border-b border-gray-200 bg-white flex justify-between items-center shrink-0 z-20">
+      <div className="px-8 py-4 border-b border-slate-200 bg-white flex justify-between items-center shrink-0 z-20">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded bg-[#002147] flex items-center justify-center shadow-sm">
+          <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-100">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-lg font-bold text-gray-900">Document Assistant</h1>
-              <Badge variant="secondary" className="bg-blue-50 text-blue-700 border border-blue-200 text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-widest">AI Core v2.4</Badge>
+              <h1 className="text-lg font-bold text-slate-900">Ultrion AI Assistant</h1>
+              <Badge variant="secondary" className="bg-blue-50 text-blue-700 border border-blue-100 text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-widest">Enterprise v2.5</Badge>
             </div>
-            <p className="text-gray-500 text-xs font-medium flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-              Neural semantic search active across operational data
+            <p className="text-slate-500 text-xs font-medium flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+              Large Language Model connected to your secure workspace
             </p>
           </div>
         </div>
-        <Button variant="ghost" size="sm" onClick={clearChat} className="text-gray-500 hover:text-red-600 rounded text-xs font-bold enterprise-button bg-white border border-gray-200 hover:bg-gray-50">
+        <Button variant="ghost" size="sm" onClick={clearChat} className="text-slate-500 hover:text-red-600 rounded-lg text-xs font-bold border border-slate-200 hover:bg-slate-50">
           <Trash2 className="w-4 h-4 mr-2" />
-          Purge Session
+          Clear Session
         </Button>
       </div>
 
@@ -164,7 +164,7 @@ export default function AIDocumentAssistant() {
         <div className="flex-1 flex flex-col relative bg-white">
           <div 
             ref={scrollRef}
-            className="flex-1 overflow-y-auto p-8 space-y-6 scroll-smooth"
+            className="flex-1 overflow-y-auto p-8 space-y-6 scroll-smooth custom-scrollbar"
           >
             <AnimatePresence initial={false}>
               {messages.map((msg) => (
@@ -178,24 +178,24 @@ export default function AIDocumentAssistant() {
                   )}
                 >
                   <div className={cn(
-                    "w-8 h-8 rounded flex items-center justify-center shrink-0 mt-1",
-                    msg.role === "assistant" ? "bg-[#002147] text-white" : "bg-gray-100 border border-gray-200 text-gray-700"
+                    "w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-1 shadow-sm",
+                    msg.role === "assistant" ? "bg-blue-600 text-white" : "bg-slate-100 border border-slate-200 text-slate-700"
                   )}>
-                    {msg.role === "assistant" ? <Bot size={16} /> : <User size={16} />}
+                    {msg.role === "assistant" ? <Bot size={18} /> : <User size={18} />}
                   </div>
                   
                   <div className="space-y-2">
                     <div className={cn(
-                      "p-4 rounded shadow-sm text-sm font-medium leading-relaxed border transition-all",
+                      "p-4 rounded-2xl shadow-sm text-sm font-medium leading-relaxed border transition-all",
                       msg.role === "assistant" 
-                        ? "bg-gray-50 border-gray-200 text-gray-700" 
-                        : "bg-[#002147] border-[#001733] text-white"
+                        ? "bg-blue-50/50 border-blue-100 text-slate-800" 
+                        : "bg-slate-900 border-slate-800 text-white"
                     )}>
                       <div dangerouslySetInnerHTML={{ __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-current">$1</strong>') }} />
                       
                       {msg.role === "assistant" && (
-                        <div className="mt-4 pt-3 border-t border-gray-200/50 flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-gray-400 flex items-center gap-1.5">
+                        <div className="mt-4 pt-3 border-t border-blue-100 flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1.5">
                             <Clock size={10} />
                             {msg.timestamp}
                           </span>
@@ -203,52 +203,42 @@ export default function AIDocumentAssistant() {
                             <Button 
                               variant="ghost" 
                               size="icon" 
-                              className="h-6 w-6 text-gray-400 hover:text-gray-900 rounded"
+                              className="h-7 w-7 text-slate-400 hover:text-blue-600 rounded-lg"
                               onClick={() => copyToClipboard(msg.content)}
                             >
-                              <Copy size={12} />
+                              <Copy size={14} />
                             </Button>
                             {msg.relatedDoc && (
                               <Button 
                                 variant="ghost" 
                                 size="icon" 
-                                className="h-6 w-6 text-gray-400 hover:text-gray-900 rounded"
-                                title="View related document"
+                                className="h-7 w-7 text-slate-400 hover:text-blue-600 rounded-lg"
+                                title="View source"
                               >
-                                <ExternalLink size={12} />
+                                <ExternalLink size={14} />
                               </Button>
                             )}
                           </div>
                         </div>
                       )}
-                      
-                      {msg.role === "user" && (
-                        <div className="mt-2 flex justify-end">
-                          <span className="text-[10px] font-bold opacity-50 flex items-center gap-1.5 text-white">
-                            {msg.timestamp}
-                            <Check size={10} />
-                          </span>
-                        </div>
-                      )}
                     </div>
 
-                    {/* Related Document Context Card */}
                     {msg.relatedDoc && (
                       <motion.div
-                        initial={{ opacity: 0, y: -5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="bg-white border border-gray-200 rounded p-3 flex items-center justify-between group cursor-pointer hover:border-[#002147] transition-all"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-white border border-slate-200 rounded-xl p-3 flex items-center justify-between group cursor-pointer hover:border-blue-400 hover:shadow-md transition-all"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="bg-blue-50 p-2 rounded border border-blue-100 group-hover:bg-[#002147] group-hover:text-white transition-colors">
-                            <FileText size={16} className="text-blue-600 group-hover:text-white transition-colors" />
+                          <div className="bg-blue-50 p-2 rounded-lg border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-colors text-blue-600">
+                            <FileText size={16} />
                           </div>
                           <div>
-                            <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Context Reference</p>
-                            <p className="text-sm font-bold text-gray-900 mt-0.5">{msg.relatedDoc.name}</p>
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Source Context</p>
+                            <p className="text-sm font-bold text-slate-900 mt-0.5">{msg.relatedDoc.name}</p>
                           </div>
                         </div>
-                        <ChevronRight size={14} className="text-gray-400 group-hover:text-[#002147]" />
+                        <ChevronRight size={14} className="text-slate-300 group-hover:text-blue-600" />
                       </motion.div>
                     )}
                   </div>
@@ -262,29 +252,28 @@ export default function AIDocumentAssistant() {
                 animate={{ opacity: 1 }}
                 className="flex gap-4 mr-auto"
               >
-                <div className="w-8 h-8 rounded bg-[#002147] flex items-center justify-center shrink-0 text-white mt-1">
-                  <Bot size={16} />
+                <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shrink-0 text-white mt-1 shadow-sm">
+                  <Bot size={18} />
                 </div>
-                <div className="bg-gray-50 border border-gray-200 p-4 rounded flex gap-1.5 items-center">
-                  <span className="w-1.5 h-1.5 bg-[#002147] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                  <span className="w-1.5 h-1.5 bg-[#002147] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                  <span className="w-1.5 h-1.5 bg-[#002147] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                <div className="bg-blue-50/50 border border-blue-100 p-4 rounded-2xl flex gap-1.5 items-center">
+                  <span className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                  <span className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                  <span className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-bounce"></span>
                 </div>
               </motion.div>
             )}
           </div>
 
           {/* Input Area */}
-          <div className="p-6 pt-2 bg-white border-t border-gray-100 shrink-0">
+          <div className="p-6 pt-2 bg-white border-t border-slate-100 shrink-0">
             <div className="max-w-4xl mx-auto space-y-4">
-              {/* Suggestions */}
               {messages.length < 3 && (
                 <div className="flex flex-wrap gap-2 justify-center">
                   {SUGGESTIONS.map((s) => (
                     <button
                       key={s}
                       onClick={() => handleSend(s)}
-                      className="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded text-[10px] font-bold uppercase tracking-wider text-gray-600 hover:border-[#002147] hover:text-[#002147] transition-all"
+                      className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:border-blue-600 hover:text-blue-600 hover:bg-blue-50 transition-all"
                     >
                       {s}
                     </button>
@@ -292,92 +281,103 @@ export default function AIDocumentAssistant() {
                 </div>
               )}
 
-              <div className="relative flex items-center bg-white border border-gray-300 rounded p-1 shadow-sm focus-within:border-[#002147] focus-within:ring-1 focus-within:ring-[#002147]/20 transition-all">
-                <div className="pl-3 pr-2 text-gray-400">
-                  <MessageSquare size={18} />
+              <div className="relative flex items-center bg-white border border-slate-300 rounded-2xl p-1.5 shadow-sm focus-within:border-blue-600 focus-within:ring-4 focus-within:ring-blue-50 transition-all">
+                <div className="pl-3 pr-2 text-slate-400">
+                  <MessageSquareText size={20} />
                 </div>
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSend(input)}
-                  placeholder="Inquire about PO, GRN, or financial artifacts..."
-                  className="border-none focus-visible:ring-0 text-sm font-medium bg-transparent text-gray-900 placeholder:text-gray-400 h-10 w-full"
+                  placeholder="Ask about contract details, financial summaries, or action items..."
+                  className="border-none focus-visible:ring-0 text-sm font-medium bg-transparent text-slate-900 placeholder:text-slate-400 h-11 w-full"
                 />
                 <Button 
                   onClick={() => handleSend(input)}
                   disabled={!input.trim() || isTyping}
-                  className="rounded w-10 h-10 bg-[#002147] hover:bg-[#001733] text-white shrink-0 ml-1 disabled:opacity-50"
+                  className="rounded-xl w-11 h-11 bg-blue-600 hover:bg-blue-700 text-white shrink-0 ml-1 shadow-lg shadow-blue-200"
                   size="icon"
                 >
-                  <Send size={16} />
+                  <Send size={18} />
                 </Button>
               </div>
-              <p className="text-[9px] text-center text-gray-400 uppercase tracking-widest font-bold">
-                Neural Core v2.4 • Industrial Grade Intelligence
+              <p className="text-[9px] text-center text-slate-400 uppercase tracking-widest font-black">
+                Ultrion Neural Engine • Trusted Enterprise Intelligence
               </p>
             </div>
           </div>
         </div>
 
         {/* Sidebar Context */}
-        <div className="hidden xl:flex w-80 border-l border-gray-200 bg-gray-50 flex-col p-6 space-y-6">
-          <h2 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#002147]"></div>
-            Active Context Node
+        <div className="hidden xl:flex w-80 border-l border-slate-200 bg-slate-50 flex-col p-6 space-y-6">
+          <h2 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></div>
+            Workspace Intelligence
           </h2>
           
           <div className="space-y-4">
-            <div className="p-4 bg-white rounded border border-gray-200 space-y-4 group hover:border-[#002147] transition-colors shadow-sm">
-              <div className="flex items-center justify-between">
-                <Badge className="bg-[#002147] text-white border-none text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-widest">PO-123</Badge>
-                <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Active</span>
-              </div>
-              <p className="text-base font-bold text-gray-900">Tata Steel Ltd</p>
-              <div className="space-y-2 pt-2 border-t border-gray-100">
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Material</span>
-                  <span className="text-xs font-bold text-gray-900">Steel Coils</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Valuation</span>
-                  <span className="text-xs font-bold text-gray-900">₹2,45,000</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 bg-white rounded border border-gray-200 space-y-4 group hover:border-[#002147] transition-colors shadow-sm">
-              <div className="flex items-center justify-between">
-                <Badge className="bg-green-600 text-white border-none text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-widest">GRN-992</Badge>
-                <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Verified</span>
-              </div>
-              <p className="text-base font-bold text-gray-900">JSW Steels</p>
-              <div className="space-y-2 pt-2 border-t border-gray-100">
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Quantity</span>
-                  <span className="text-xs font-bold text-gray-900">12.5 Tons</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Status</span>
-                  <span className="text-[10px] font-bold text-green-600 uppercase tracking-widest">Quality Pass</span>
-                </div>
-              </div>
-            </div>
+             <ContextCard 
+              label="Recently Analyzed" 
+              title="Global Service Agreement" 
+              metadata={[
+                { label: "Status", value: "Verified" },
+                { label: "AI Confidence", value: "98.5%" }
+              ]} 
+             />
+             <ContextCard 
+              label="Compliance Alert" 
+              title="Liability Insurance" 
+              metadata={[
+                { label: "Expires", value: "In 12 days" },
+                { label: "Action", value: "Review Renewal" }
+              ]} 
+              urgent
+             />
           </div>
 
-          <Separator className="bg-gray-200" />
+          <Separator className="bg-slate-200" />
 
           <div className="space-y-4">
-            <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Recent Inquiries</h3>
+            <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Common Inquiries</h3>
             <div className="space-y-3">
-              {["PO status for Tata Steel", "Pending invoices", "GRN quality reports"].map(q => (
-                <div key={q} className="text-xs font-bold text-gray-700 hover:text-[#002147] cursor-pointer flex items-center gap-2 group transition-colors">
-                  <ChevronRight size={12} className="text-gray-400 group-hover:text-[#002147]" />
+              {[
+                "Extract all payment terms", 
+                "Summarize Q4 liabilities", 
+                "Identify missing signatures"
+              ].map(q => (
+                <div key={q} className="text-xs font-bold text-slate-600 hover:text-blue-600 cursor-pointer flex items-center gap-2 group transition-all">
+                  <ChevronRight size={14} className="text-slate-300 group-hover:text-blue-600 transition-colors" />
                   {q}
                 </div>
               ))}
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function ContextCard({ label, title, metadata, urgent }: { label: string, title: string, metadata: { label: string, value: string }[], urgent?: boolean }) {
+  return (
+    <div className={cn(
+      "p-4 bg-white rounded-2xl border transition-all shadow-sm group",
+      urgent ? "border-red-100 hover:border-red-400" : "border-slate-200 hover:border-blue-400"
+    )}>
+      <div className="flex items-center justify-between mb-3">
+        <Badge className={cn(
+          "text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest border-none",
+          urgent ? "bg-red-600 text-white" : "bg-blue-600 text-white"
+        )}>{label}</Badge>
+      </div>
+      <p className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{title}</p>
+      <div className="space-y-2 pt-3 mt-3 border-t border-slate-50">
+        {metadata.map((m, i) => (
+          <div key={i} className="flex justify-between items-center">
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{m.label}</span>
+            <span className={cn("text-[10px] font-bold", urgent && m.label === "Expires" ? "text-red-600" : "text-slate-700")}>{m.value}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

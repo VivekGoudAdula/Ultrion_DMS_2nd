@@ -18,10 +18,10 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
     # CORS
-    ALLOWED_ORIGINS: str = "http://localhost:5173,http://localhost:3000,https://mpl-steels-smart-ops.vercel.app"
+    ALLOWED_ORIGINS: str = "http://localhost:5173,http://localhost:3000,https://ultrion-dms.vercel.app"
 
     # App metadata
-    APP_NAME: str = "MPL Steels Smart Ops API"
+    APP_NAME: str = "Ultrion DMS API"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
 
