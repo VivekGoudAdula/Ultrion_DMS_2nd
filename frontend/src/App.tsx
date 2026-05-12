@@ -121,13 +121,7 @@ export default function App() {
     }
   };
 
-  if (view === "landing") {
-    return <LandingPage onGetStarted={() => setView("login")} onLogin={() => setView("login")} />;
-  }
 
-  if (view === "login") {
-    return <Auth onAuthSuccess={handleAuthSuccess} onBack={() => setView("landing")} />;
-  }
 
   /** Permission guard – viewer/editor can access all DMS modules except user-management */
   const isAllowed = (module: Module): boolean => {
